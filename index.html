@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FF6B35">
+<title>口算小天才</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app" class="app-container">
+
+  <!-- ========== 首页 ========== -->
+  <section id="screen-home" class="screen active">
+    <div class="screen-inner">
+      <div class="home-header">
+        <div class="mascot">🦊</div>
+        <h1 class="app-title">口算小天才</h1>
+        <p class="app-subtitle">每天练一练，数学更厉害！</p>
+      </div>
+      <div class="home-streak" id="home-streak">
+        <span class="streak-icon">🔥</span>
+        <span class="streak-text">连续打卡 <strong id="streak-days">0</strong> 天</span>
+      </div>
+      <div class="mode-grid">
+        <button class="mode-btn mode-practice" data-mode="practice">
+          <span class="mode-icon">📝</span>
+          <span class="mode-name">开始练习</span>
+          <span class="mode-desc">不限时·无限答题</span>
+        </button>
+        <button class="mode-btn mode-challenge" data-mode="challenge">
+          <span class="mode-icon">⚡</span>
+          <span class="mode-name">60秒挑战</span>
+          <span class="mode-desc">限时冲刺·刷最高分</span>
+        </button>
+        <button class="mode-btn mode-level" data-mode="level">
+          <span class="mode-icon">🏔️</span>
+          <span class="mode-name">闯关模式</span>
+          <span class="mode-desc">10题一关·层层突破</span>
+        </button>
+        <button class="mode-btn mode-survival" data-mode="survival">
+          <span class="mode-icon">❤️</span>
+          <span class="mode-name">生存模式</span>
+          <span class="mode-desc">保护爱心·坚持到底</span>
+        </button>
+        <button class="mode-btn mode-combo" data-mode="combo">
+          <span class="mode-icon">🔥</span>
+          <span class="mode-name">连击模式</span>
+          <span class="mode-desc">连续答对·分数翻倍</span>
+        </button>
+        <button class="mode-btn mode-pk" data-mode="pk">
+          <span class="mode-icon">⚔️</span>
+          <span class="mode-name">双人PK</span>
+          <span class="mode-desc">两人比拼·谁更厉害</span>
+        </button>
+        <button class="mode-btn mode-daily" data-mode="daily">
+          <span class="mode-icon">📅</span>
+          <span class="mode-name">每日挑战</span>
+          <span class="mode-desc">今日专属·天天不同</span>
+        </button>
+        <button class="mode-btn mode-review" data-mode="review">
+          <span class="mode-icon">📖</span>
+          <span class="mode-name">错题复习</span>
+          <span class="mode-desc">消灭错题·查漏补缺</span>
+        </button>
+      </div>
+      <div class="home-footer">
+        <button class="icon-btn" id="btn-settings" aria-label="设置">
+          <span class="icon-btn-icon">⚙️</span>
+          <span class="icon-btn-label">设置</span>
+        </button>
+        <button class="icon-btn" id="btn-errorbook" aria-label="错题本">
+          <span class="icon-btn-icon">📖</span>
+          <span class="icon-btn-label">错题本</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 模式选择 / 设置页 ========== -->
+  <section id="screen-setup" class="screen">
+    <div class="screen-inner">
+      <div class="setup-header">
+        <button class="back-btn" data-target="home">← 返回</button>
+        <h2 id="setup-title">开始练习</h2>
+      </div>
+      <div class="setup-section">
+        <h3 class="setup-label">选择难度</h3>
+        <div class="chip-group" id="difficulty-group">
+          <button class="chip active" data-diff="preschool">幼儿版 (10以内)</button>
+          <button class="chip" data-diff="lower">低年级 (20以内)</button>
+          <button class="chip" data-diff="middle">中年级 (100以内)</button>
+          <button class="chip" data-diff="upper">高年级 (混合·小数)</button>
+        </div>
+      </div>
+      <div class="setup-section">
+        <h3 class="setup-label">运算类型</h3>
+        <div class="chip-group" id="operation-group">
+          <button class="chip active" data-op="add">加法</button>
+          <button class="chip" data-op="sub">减法</button>
+          <button class="chip" data-op="mul">乘法</button>
+          <button class="chip" data-op="div">除法</button>
+          <button class="chip" data-op="mixed">混合运算</button>
+          <button class="chip" data-op="compare">比大小</button>
+          <button class="chip" data-op="fill">填空题</button>
+        </div>
+      </div>
+      <div class="setup-section" id="count-section">
+        <h3 class="setup-label">题目数量</h3>
+        <div class="chip-group" id="count-group">
+          <button class="chip" data-count="10">10道</button>
+          <button class="chip active" data-count="20">20道</button>
+          <button class="chip" data-count="50">50道</button>
+          <button class="chip" data-count="100">100道</button>
+        </div>
+      </div>
+      <button class="btn-start" id="btn-start-game">🚀 开始答题</button>
+    </div>
+  </section>
+
+  <!-- ========== 答题页 ========== -->
+  <section id="screen-quiz" class="screen">
+    <div class="quiz-topbar">
+      <button class="back-btn-small" id="btn-quit">✕</button>
+      <div class="topbar-info">
+        <span class="topbar-item" id="quiz-timer">⏱ 00:00</span>
+        <span class="topbar-item" id="quiz-progress">1/20</span>
+        <span class="topbar-item hearts-display" id="quiz-hearts"></span>
+        <span class="topbar-item combo-display" id="quiz-combo"></span>
+      </div>
+      <div class="topbar-score" id="quiz-score-small">0分</div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+    <div class="quiz-main">
+      <div class="question-area" id="question-area">
+        <div class="question-text" id="question-text">12 + 7 = ?</div>
+      </div>
+      <div class="answer-display" id="answer-display">
+        <span class="answer-value" id="answer-value"></span>
+        <span class="answer-cursor" id="answer-cursor">|</span>
+      </div>
+      <div class="feedback-pop" id="feedback-pop"></div>
+    </div>
+    <div class="numpad" id="numpad">
+      <button class="numpad-btn num-btn" data-key="1">1</button>
+      <button class="numpad-btn num-btn" data-key="2">2</button>
+      <button class="numpad-btn num-btn" data-key="3">3</button>
+      <button class="numpad-btn num-btn" data-key="4">4</button>
+      <button class="numpad-btn num-btn" data-key="5">5</button>
+      <button class="numpad-btn num-btn" data-key="6">6</button>
+      <button class="numpad-btn num-btn" data-key="7">7</button>
+      <button class="numpad-btn num-btn" data-key="8">8</button>
+      <button class="numpad-btn num-btn" data-key="9">9</button>
+      <button class="numpad-btn numpad-negative" data-key="-">−</button>
+      <button class="numpad-btn num-btn" data-key="0">0</button>
+      <button class="numpad-btn numpad-decimal" data-key=".">.</button>
+      <button class="numpad-btn numpad-back" data-key="back">⌫</button>
+      <button class="numpad-btn numpad-ok" data-key="ok">✓</button>
+    </div>
+  </section>
+
+  <!-- ========== 结算页 ========== -->
+  <section id="screen-result" class="screen">
+    <div class="screen-inner">
+      <div class="result-header">
+        <div class="result-icon" id="result-icon">🎉</div>
+        <h2 id="result-title">太棒了！</h2>
+      </div>
+      <div class="result-score-wrap">
+        <div class="result-score" id="result-score">0</div>
+        <div class="result-score-label">分</div>
+      </div>
+      <div class="result-stats" id="result-stats"></div>
+      <div class="result-stars" id="result-stars">
+        <span class="star" data-star="1">⭐</span>
+        <span class="star" data-star="2">⭐</span>
+        <span class="star" data-star="3">⭐</span>
+      </div>
+      <div class="result-wrong" id="result-wrong-section" style="display:none;">
+        <h3 class="wrong-title">📋 错题回顾</h3>
+        <div class="wrong-list" id="wrong-list"></div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-retry" id="btn-retry">🔄 再来一次</button>
+        <button class="btn-home" id="btn-result-home">🏠 返回首页</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PK 模式等待 / 准备页 ========== -->
+  <section id="screen-pk-ready" class="screen">
+    <div class="screen-inner">
+      <div class="pk-header">
+        <button class="back-btn" data-target="home">← 返回</button>
+        <h2>⚔️ 双人PK</h2>
+      </div>
+      <div class="pk-setup">
+        <div class="pk-player">
+          <div class="pk-player-avatar">🦊</div>
+          <div class="pk-player-name">玩家一</div>
+          <div class="pk-player-color" style="color:#FF6B35;">🟠</div>
+        </div>
+        <div class="pk-vs">VS</div>
+        <div class="pk-player">
+          <div class="pk-player-avatar">🐻</div>
+          <div class="pk-player-name">玩家二</div>
+          <div class="pk-player-color" style="color:#4A90D9;">🔵</div>
+        </div>
+      </div>
+      <div class="setup-section">
+        <h3 class="setup-label">选择难度</h3>
+        <div class="chip-group" id="pk-difficulty-group">
+          <button class="chip active" data-diff="preschool">幼儿版</button>
+          <button class="chip" data-diff="lower">低年级</button>
+          <button class="chip" data-diff="middle">中年级</button>
+          <button class="chip" data-diff="upper">高年级</button>
+        </div>
+      </div>
+      <button class="btn-start" id="btn-start-pk">🚀 开始PK</button>
+    </div>
+  </section>
+
+  <!-- ========== PK 答题页 ========== -->
+  <section id="screen-pk-quiz" class="screen">
+    <div class="pk-quiz-header">
+      <div class="pk-player-indicator" id="pk-current-player">
+        <span class="pk-avatar-small">🦊</span>
+        <span>玩家一 答题中</span>
+      </div>
+    </div>
+    <div class="pk-scoreboard">
+      <div class="pk-score-item player1">
+        <span>🦊 玩家一</span>
+        <span class="pk-big-score" id="pk-score-p1">0</span>
+      </div>
+      <div class="pk-score-divider"></div>
+      <div class="pk-score-item player2">
+        <span>🐻 玩家二</span>
+        <span class="pk-big-score" id="pk-score-p2">0</span>
+      </div>
+    </div>
+    <div class="quiz-main">
+      <div class="question-area">
+        <div class="question-text" id="pk-question-text">12 + 7 = ?</div>
+      </div>
+      <div class="answer-display" id="pk-answer-display">
+        <span class="answer-value" id="pk-answer-value"></span>
+        <span class="answer-cursor">|</span>
+      </div>
+      <div class="feedback-pop" id="pk-feedback-pop"></div>
+    </div>
+    <div class="numpad" id="pk-numpad">
+      <button class="numpad-btn num-btn" data-key="1" data-pk="true">1</button>
+      <button class="numpad-btn num-btn" data-key="2" data-pk="true">2</button>
+      <button class="numpad-btn num-btn" data-key="3" data-pk="true">3</button>
+      <button class="numpad-btn num-btn" data-key="4" data-pk="true">4</button>
+      <button class="numpad-btn num-btn" data-key="5" data-pk="true">5</button>
+      <button class="numpad-btn num-btn" data-key="6" data-pk="true">6</button>
+      <button class="numpad-btn num-btn" data-key="7" data-pk="true">7</button>
+      <button class="numpad-btn num-btn" data-key="8" data-pk="true">8</button>
+      <button class="numpad-btn num-btn" data-key="9" data-pk="true">9</button>
+      <button class="numpad-btn numpad-negative" data-key="-" data-pk="true">−</button>
+      <button class="numpad-btn num-btn" data-key="0" data-pk="true">0</button>
+      <button class="numpad-btn numpad-decimal" data-key="." data-pk="true">.</button>
+      <button class="numpad-btn numpad-back" data-key="back" data-pk="true">⌫</button>
+      <button class="numpad-btn numpad-ok" data-key="ok" data-pk="true">✓</button>
+    </div>
+  </section>
+
+  <!-- ========== PK 结算页 ========== -->
+  <section id="screen-pk-result" class="screen">
+    <div class="screen-inner">
+      <div class="result-header">
+        <div class="result-icon" id="pk-result-icon">🏆</div>
+        <h2 id="pk-result-title">PK结束！</h2>
+      </div>
+      <div class="pk-result-scores">
+        <div class="pk-result-player">
+          <span class="pk-result-avatar">🦊</span>
+          <span class="pk-result-name">玩家一</span>
+          <span class="pk-result-score" id="pk-result-score-p1">0分</span>
+        </div>
+        <div class="pk-result-player">
+          <span class="pk-result-avatar">🐻</span>
+          <span class="pk-result-name">玩家二</span>
+          <span class="pk-result-score" id="pk-result-score-p2">0分</span>
+        </div>
+      </div>
+      <div class="pk-winner-banner" id="pk-winner-banner"></div>
+      <div class="result-actions">
+        <button class="btn-retry" id="btn-pk-retry">🔄 再来一局</button>
+        <button class="btn-home" id="btn-pk-home">🏠 返回首页</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 错题本 ========== -->
+  <section id="screen-errorbook" class="screen">
+    <div class="screen-inner">
+      <div class="setup-header">
+        <button class="back-btn" data-target="home">← 返回</button>
+        <h2>📖 错题本</h2>
+      </div>
+      <div class="errorbook-stats" id="errorbook-stats"></div>
+      <div class="errorbook-list" id="errorbook-list">
+        <p class="empty-hint">还没有错题，继续加油！</p>
+      </div>
+      <div class="errorbook-actions" id="errorbook-actions" style="display:none;">
+        <button class="btn-start" id="btn-review-errors">🔄 复习错题</button>
+        <button class="btn-text" id="btn-clear-errors">清空错题本</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 设置页 ========== -->
+  <section id="screen-settings" class="screen">
+    <div class="screen-inner">
+      <div class="setup-header">
+        <button class="back-btn" data-target="home">← 返回</button>
+        <h2>⚙️ 设置</h2>
+      </div>
+      <div class="settings-list">
+        <div class="setting-item">
+          <span class="setting-label">音效</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="setting-sound" checked>
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <span class="setting-label">震动反馈</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="setting-vibrate" checked>
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+        <div class="setting-item">
+          <span class="setting-label">动画效果</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="setting-animation" checked>
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+      </div>
+      <div class="settings-about">
+        <h3>关于</h3>
+        <p>口算小天才 v1.0 — 让数学变得更有趣！</p>
+        <p>专为 4~12 岁儿童设计</p>
+      </div>
+      <button class="btn-text" id="btn-reset-all" style="color:#F44336;">🗑️ 清除所有数据</button>
+    </div>
+  </section>
+
+  <!-- ========== COMBO 覆盖层动画 ========== -->
+  <div class="combo-overlay" id="combo-overlay">
+    <div class="combo-content" id="combo-content"></div>
+  </div>
+
+  <!-- ========== 星星动画容器 ========== -->
+  <div class="stars-container" id="stars-container"></div>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/question.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/game.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
