@@ -151,6 +151,19 @@
       });
     }
 
+    // 比大小按钮
+    const compareArea = document.getElementById('compare-area');
+    if (compareArea) {
+      compareArea.addEventListener('click', function(e) {
+        const btn = e.target.closest('.compare-btn');
+        if (!btn) return;
+        Sound.click();
+        const val = btn.dataset.compare;
+        Game.currentInput = val === 'gt' ? '>' : '<';
+        submitCurrentAnswer();
+      });
+    }
+
     // 物理键盘支持
     document.addEventListener('keydown', function(e) {
       if (UI.currentScreen !== 'quiz') return;
@@ -238,7 +251,7 @@
     }
 
     // 更新 UI
-    updateQuizUI(result);
+    updateQuizUI();
 
     // 延迟移动到下一题
     setTimeout(() => {
@@ -306,23 +319,29 @@
     if (!q) return;
 
     const qText = document.getElementById('question-text');
+    const numpad = document.getElementById('numpad');
+    const compareArea = document.getElementById('compare-area');
+
     if (qText) {
       qText.textContent = q.display;
+    }
 
-      // 比大小特殊处理
-      if (q.type === 'compare') {
-        Game.isCompareQuestion = true;
-        Game.compareOptions = q.extras?.symbols || ['>', '<'];
-      } else {
-        Game.isCompareQuestion = false;
-        Game.compareOptions = [];
-      }
+    // 比大小：显示 > < 按钮，隐藏数字键盘
+    if (q.type === 'compare') {
+      Game.isCompareQuestion = true;
+      if (numpad) numpad.style.display = 'none';
+      if (compareArea) compareArea.style.display = '';
+      document.getElementById('answer-display').style.display = 'none';
+    } else {
+      Game.isCompareQuestion = false;
+      if (numpad) numpad.style.display = '';
+      if (compareArea) compareArea.style.display = 'none';
+      document.getElementById('answer-display').style.display = '';
     }
   }
 
-  function updateQuizUI(result) {
+  function updateQuizUI() {
     const s = Game.state;
-    const q = Game.getCurrentQuestion();
 
     // 进度
     if (s.mode === 'level') {

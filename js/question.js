@@ -129,66 +129,67 @@ const QuestionGenerator = {
   /**
    * 生成比大小题
    */
-  genCompare(diff) {
+  genCompare(diff, difficulty) {
     const rng = this.getNumberGen(difficulty);
-    // 生成两个表达式
+    // 生成两个不同运算的表达式
     const ops = ['add', 'sub', 'mul'];
     if (diff.operations.includes('div')) ops.push('div');
-    const op1 = ops[Math.floor(Math.random() * (Math.min(ops.length, 2)))];
-    const op2 = ops[Math.floor(Math.random() * (Math.min(ops.length, 2)))];
 
-    let result1, result2, disp1, disp2;
-    if (op1 === 'add') {
-      let a = rng(), b_ = rng();
-      result1 = a + b_;
-      disp1 = `${a}+${b_}`;
-    } else if (op1 === 'sub') {
-      let a = rng(), b_ = rng();
-      if (a < b_) [a, b_] = [b_, a];
-      result1 = a - b_;
-      disp1 = `${a}−${b_}`;
-    } else {
-      let a = this.randInt(1, 9), b_ = this.randInt(1, 9);
-      result1 = a * b_;
-      disp1 = `${a}×${b_}`;
-    }
-    if (op2 === 'add') {
-      let a = rng(), b_ = rng();
-      result2 = a + b_;
-      disp2 = `${a}+${b_}`;
-    } else if (op2 === 'sub') {
-      let a = rng(), b_ = rng();
-      if (a < b_) [a, b_] = [b_, a];
-      result2 = a - b_;
-      disp2 = `${a}−${b_}`;
-    } else {
-      let a = this.randInt(1, 9), b_ = this.randInt(1, 9);
-      result2 = a * b_;
-      disp2 = `${a}×${b_}`;
+    // 随机选两个运算（可以相同）
+    const op1 = ops[Math.floor(Math.random() * ops.length)];
+    const op2 = ops[Math.floor(Math.random() * ops.length)];
+
+    const genOne = (op) => {
+      let a, b, result, disp;
+      if (op === 'add') {
+        a = rng(); b = rng();
+        result = a + b;
+        disp = `${a} + ${b}`;
+      } else if (op === 'sub') {
+        a = rng(); b = rng();
+        if (a < b) [a, b] = [b, a];
+        result = a - b;
+        disp = `${a} − ${b}`;
+      } else if (op === 'mul') {
+        a = this.randInt(1, diff.mulRange ? diff.mulRange[1] : 9);
+        b = this.randInt(1, diff.mulRange ? diff.mulRange[1] : 9);
+        result = a * b;
+        disp = `${a} × ${b}`;
+      } else { // div
+        b = this.randInt(2, 9);
+        const q = this.randInt(2, 9);
+        a = b * q;
+        result = q;
+        disp = `${a} ÷ ${b}`;
+      }
+      return { result, disp };
+    };
+
+    let e1 = genOne(op1);
+    let e2 = genOne(op2);
+
+    // 确保两边结果不同且差距合理
+    let attempts = 0;
+    while (e1.result === e2.result && attempts < 10) {
+      e2 = genOne(ops[Math.floor(Math.random() * ops.length)]);
+      attempts++;
     }
 
-    // 确保两个结果不同
-    if (result1 === result2) {
-      result2 += this.randInt(1, 5);
-    }
-
-    const symbols = ['>', '<'];
-    const correctSymbol = result1 > result2 ? '>' : '<';
+    const correctSymbol = e1.result > e2.result ? '>' : '<';
 
     return {
-      display: `${disp1} ___ ${disp2}`,
-      question: `请选择正确的符号：`,
-      extras: { symbols, correctSymbol },
+      display: `${e1.disp} ___ ${e2.disp}`,
       answer: correctSymbol,
       type: 'compare',
-      result1, result2
+      result1: e1.result,
+      result2: e2.result
     };
   },
 
   /**
    * 生成填空题
    */
-  genFill(diff) {
+  genFill(diff, difficulty) {
     const rng = this.getNumberGen(difficulty);
     const ops = diff.operations.filter(o => o !== 'fill' && o !== 'compare' && o !== 'mixed');
     if (ops.length === 0) ops.push('add');
@@ -299,8 +300,8 @@ const QuestionGenerator = {
       case 'sub': return this.genSub(diff);
       case 'mul': return this.genMul(diff);
       case 'div': return this.genDiv(diff);
-      case 'compare': return this.genCompare(diff);
-      case 'fill': return this.genFill(diff);
+      case 'compare': return this.genCompare(diff, difficulty);
+      case 'fill': return this.genFill(diff, difficulty);
       default: return this.genAdd(diff);
     }
   }

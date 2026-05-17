@@ -484,6 +484,57 @@ body {
   50% { opacity: 0; }
 }
 
+/* Compare Area (比大小) */
+.compare-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.compare-prompt {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-light);
+}
+
+.compare-btns {
+  display: flex;
+  gap: 24px;
+}
+
+.compare-btn {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: none;
+  font-size: 48px;
+  font-weight: 900;
+  cursor: pointer;
+  font-family: var(--font);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  transition: all 0.12s ease;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compare-btn:active {
+  transform: scale(0.9);
+}
+
+.compare-gt {
+  background: linear-gradient(135deg, #FF6B35, #FF9800);
+  box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+}
+
+.compare-lt {
+  background: linear-gradient(135deg, #4A90D9, #42A5F5);
+  box-shadow: 0 6px 20px rgba(74,144,217,0.4);
+}
+
 /* Feedback Pop */
 .feedback-pop {
   position: absolute;
