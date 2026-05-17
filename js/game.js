@@ -333,8 +333,8 @@ const Game = {
       return { finished: true, reason: '爱心耗尽！' };
     }
 
-    // 其他模式：检查是否达到总数
-    if (s.currentIndex >= s.totalQuestions) {
+    // 其他模式：检查是否达到总数（闯关模式有自己的关卡结算逻辑）
+    if (s.mode !== 'level' && s.currentIndex >= s.totalQuestions) {
       return { finished: true };
     }
 
